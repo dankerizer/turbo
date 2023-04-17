@@ -1277,6 +1277,16 @@ function getOrInstantiateRuntimeModule(moduleId, chunkPath) {
 }
 
 /**
+ * Returns the path of a chunk defined by its data.
+ *
+ * @param {ChunkData} chunkData
+ * @returns {ChunkPath} the chunk path
+ */
+function getChunkPath(chunkData) {
+  return typeof chunkData === "string" ? chunkData : chunkData.path;
+}
+
+/**
  * Subscribes to chunk list updates from the update server and applies them.
  *
  * @param {ChunkList} chunkList
@@ -1288,11 +1298,7 @@ function registerChunkList(chunkList) {
   ]);
 
   // Adding chunks to chunk lists and vice versa.
-  const chunks = new Set(
-    chunkList.chunks.map((chunkData) =>
-      typeof chunkData === "string" ? chunkData : chunkData.path
-    )
-  );
+  const chunks = new Set(chunkList.chunks.map(getChunkPath));
   chunkListChunksMap.set(chunkList.path, chunks);
   for (const chunkPath of chunks) {
     let chunkChunkLists = chunkChunkListsMap.get(chunkPath);
